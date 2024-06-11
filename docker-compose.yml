@@ -4,4 +4,4 @@ services:
     build: .
     image: dynamic-dns-namecheap:latest
     container_name: dynamic-dns-namecheap
-    command: ["-hosts=host1,host2", "-domain_name=mydomain.com", "-ddns_password=mysecretpassword"]
+    command: ["-hosts=host1,host2", "-domain_name=mydomain.com", "-ddns_password=mysecretpassword", "-timer_schedule=30000"]
