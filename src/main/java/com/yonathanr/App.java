@@ -75,7 +75,7 @@ public class App {
         private void actualizarIpEnNamecheap(String[] hosts, String domain, String password, String ip) {
             for (String host : hosts) {
                 String url = String.format("https://dynamicdns.park-your-domain.com/update?host=%s&domain=%s&password=%s&ip=%s",
-                        host, domain, password, ip);
+                        host.trim(), domain.trim(), password.trim(), ip.trim());
 
                 HttpClient client = HttpClient.newHttpClient();
 
