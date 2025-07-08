@@ -12,9 +12,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicLong;
 
 
 public class App {
+    private static final AtomicLong logCounter = new AtomicLong(0L);
     static SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
     private static String previousIp = "0.0.0.0";
 
@@ -59,13 +61,16 @@ public class App {
         public void run() {
             try {
                 String currentIp = getCurrentIp();
-                if (Boolean.FALSE.equals(currentIp.equals(previousIp))) {
-                    System.out.println(formatter.format(new Date()) + " - Se inicia actualización de IP de: " + previousIp + " a " + currentIp);
-                    actualizarIpEnNamecheap(hosts, domainName, ddnsPassword, currentIp);
-                    System.out.println(formatter.format(new Date()) + " - Se actualizarón los DNS con la IP: " + currentIp);
-                    previousIp = currentIp;
-                } else {
-                    System.out.println(formatter.format(new Date()) + " - IP actual: " + currentIp);
+                if (currentIp != null) {
+                    if (Boolean.FALSE.equals(currentIp.equals(previousIp))) {
+                        System.out.println(formatter.format(new Date()) + " - Se inicia actualización de IP de: " + previousIp + " a " + currentIp);
+                        actualizarIpEnNamecheap(hosts, domainName, ddnsPassword, currentIp);
+                        System.out.println(formatter.format(new Date()) + " - Se actualizarón los DNS con la IP: " + currentIp);
+                        previousIp = currentIp;
+                    } else {
+                        long currentCount = logCounter.incrementAndGet();
+                        System.out.println(currentCount + " - " + formatter.format(new Date()) + " - IP actual: " + currentIp);
+                    }
                 }
             } catch (IOException | InterruptedException e) {
                 System.err.println("ERROR: " + e.getMessage());
